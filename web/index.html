@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BAE</title>
+  <link rel="stylesheet" href="./socle/tokens.css">
+  <link rel="stylesheet" href="./socle/bundle.css">
+  <link rel="stylesheet" href="./app.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="bar">
+      <span class="bar__title">BAE</span>
+      <span class="bar__sub">Bethesda Archive Extractor</span>
+      <span class="bar__spacer"></span>
+      <button class="sc-btn sc-btn--secondary" id="btnTheme" type="button">Thème clair</button>
+    </header>
+
+    <div class="toolbar">
+      <button class="sc-btn sc-btn--action" id="btnOpen" type="button">📦 Ouvrir une archive (.BSA / .BA2)</button>
+      <span class="toolbar__info" id="info">Ouvrez ou glissez-déposez une archive n'importe où dans la fenêtre.</span>
+      <span class="bar__spacer"></span>
+      <button class="sc-btn sc-btn--tertiary" id="btnDemo" type="button">Charger une démo</button>
+      <input type="file" id="fileInput" accept=".bsa,.ba2" hidden>
+    </div>
+
+    <main class="work">
+      <div class="drop" id="drop">
+        <div class="drop__icon" aria-hidden="true">📥</div>
+        <p class="drop__title">Déposez une archive ici</p>
+        <p class="drop__hint">Formats pris en charge : .BSA (Oblivion à Skyrim SE) et .BA2 (Fallout 4, Starfield).<br>La lecture se fait dans le navigateur, aucun fichier n'est envoyé.</p>
+      </div>
+
+      <div class="table-wrap" id="tableWrap" hidden>
+        <table class="files">
+          <thead>
+            <tr>
+              <th data-sort="name" scope="col">Chemin du fichier</th>
+              <th data-sort="size" scope="col" class="num">Taille brute</th>
+              <th data-sort="compressed" scope="col">Compression</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer class="foot">
+      <div class="progress-row">
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="progressLabel" id="progress">
+          <div class="progress__chunk" id="progressChunk"></div>
+        </div>
+        <span class="progress__label" id="progressLabel">0 %</span>
+      </div>
+      <div class="foot__row">
+        <span class="sc-badge sc-badge--dot" id="status">En attente</span>
+        <span class="bar__spacer"></span>
+        <button class="sc-btn sc-btn--primary" id="btnExtract" type="button" disabled>Extraire tout</button>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

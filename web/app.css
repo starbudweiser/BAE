@@ -1,0 +1,63 @@
+/* BAE — maquette web, sur les tokens Socle */
+html, body { height: 100%; }
+.app { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+
+/* En-tête */
+.bar { display: flex; align-items: center; gap: var(--space-2); height: var(--size-bar); padding: 0 var(--space-3); background: var(--surface-raised); border-bottom: 1px solid var(--border); flex: none; }
+.bar__title { font: 700 14px/20px var(--font-sans); letter-spacing: .025em; color: var(--text-strong); }
+.bar__sub { color: var(--text-subtle); }
+.bar__spacer { flex: 1; }
+.bar .sc-btn { height: 26px; }
+
+/* Barre d'outils */
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); padding: var(--space-3); flex: none; }
+.toolbar .sc-btn--action { height: var(--size-control-lg); font-size: 12px; }
+.toolbar__info { color: var(--text-muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toolbar__info b { color: var(--text-strong); font-weight: 700; }
+
+/* Zone de travail */
+.work { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0 var(--space-3); }
+.drop { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); text-align: center; border: 2px dashed var(--border-strong); border-radius: var(--radius-lg); background: var(--bg-inset); padding: var(--space-6); transition: border-color .15s, background-color .15s; }
+.drop__icon { font-size: 28px; line-height: 1; }
+.drop__title { margin: 0; font: 700 16px/24px var(--font-sans); letter-spacing: .025em; color: var(--text-strong); }
+.drop__hint { margin: 0; color: var(--text-subtle); line-height: 1.5; }
+.app.is-dragging .drop, .app.is-dragging .table-wrap { border-color: var(--accent); }
+.app.is-dragging .drop { background: var(--accent-tint); }
+
+/* Tableau */
+.table-wrap { flex: 1; min-height: 0; overflow: auto; background: var(--bg-sunken); border: 1px solid var(--border); border-radius: var(--radius); }
+.table-wrap[hidden], .drop[hidden] { display: none; }
+.files { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.files th { position: sticky; top: 0; z-index: 1; text-align: left; padding: var(--space-1\.5) var(--space-2); background: var(--bg-inset); border-bottom: 1px solid var(--border); color: var(--text-subtle); font: 700 11px/16px var(--font-sans); cursor: pointer; user-select: none; white-space: nowrap; }
+.files th:hover { color: var(--text); }
+.files th[aria-sort] { color: var(--text-strong); }
+.files th[aria-sort="ascending"]::after { content: " ▲"; color: var(--accent-text); }
+.files th[aria-sort="descending"]::after { content: " ▼"; color: var(--accent-text); }
+.files th:nth-child(2) { width: 110px; }
+.files th:nth-child(3) { width: 130px; }
+.files td { padding: 3px var(--space-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid var(--border-subtle); }
+.files .num { text-align: right; font-variant-numeric: tabular-nums; }
+.files td.path { font: 12px/18px var(--font-mono); color: var(--text); }
+.files td.path span { color: var(--text-subtle); }
+.files td.num { font: 11px/18px var(--font-mono); color: var(--text-muted); }
+.files tbody tr { cursor: default; }
+.files tbody tr:hover { background: var(--surface-hover); }
+.files tbody tr.is-selected { background: var(--surface-selected); }
+.files tbody tr.is-selected td.path { color: var(--text-strong); }
+.files tbody tr.more td { text-align: center; color: var(--text-subtle); font-style: italic; padding: var(--space-2); }
+
+/* Pied : progression + statut */
+.foot { flex: none; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); }
+.progress-row { display: flex; align-items: center; gap: var(--space-2); }
+.progress { flex: 1; height: 8px; background: var(--bg-sunken); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.progress__chunk { height: 100%; width: 0; background: var(--accent); }
+.progress__label { min-width: 40px; text-align: right; font: 11px/16px var(--font-mono); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.foot__row { display: flex; align-items: center; gap: var(--space-2); }
+
+@media (max-width: 600px) {
+  .bar__sub { display: none; }
+  .files th:nth-child(3) { width: 96px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

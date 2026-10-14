@@ -16,7 +16,8 @@ import tempfile
 
 from PyQt6.QtGui import QColor, QFont, QFontDatabase, QPalette
 from PyQt6.QtCore import QEvent, QObject, Qt
-from PyQt6.QtWidgets import QApplication, QCheckBox, QHBoxLayout, QLabel, QRadioButton, QSizePolicy, QWidget
+from PyQt6.QtWidgets import (QApplication, QCheckBox, QHBoxLayout, QLabel, QPushButton, QRadioButton, QSizePolicy,
+                             QWidget)
 
 TOKENS = {'version': 1,
  'colors': {'dark': {'bg': '#1e1e1e',
@@ -159,6 +160,18 @@ TOKENS = {'version': 1,
           'mono-sm': {'family': 'mono', 'size': 11, 'weight': 400}}}
 
 _theme = "dark"
+_full = True
+# Échelle fixe des applis Qt : les tailles typographiques des tokens × 1,1 (body 12 → 13 px…), réglée
+# après essais sur l'écran de l'utilisateur. Pas de zoom à la volée : espacements, rayons et hauteurs ne
+# changent pas, l'agencement reste celui qui a été vérifié.
+SCALE = 1.1
+for _spec in TOKENS["type"].values():
+    _spec["size"] = max(8, round(_spec["size"] * SCALE))
+
+
+def scale() -> float:
+    """Échelle typographique des applis (fixe) : pour mettre à l'échelle une taille propre à l'appli."""
+    return SCALE
 
 
 def c(name: str, theme: str | None = None) -> str:
@@ -509,8 +522,9 @@ def apply(app: QApplication, theme: str = "dark", full: bool = True) -> None:
     full=False pour une appli qui garde sa propre feuille de style (couleurs déjà Socle) :
     seules les règles de base (défilement, infobulles, menus, dialogues) sont ajoutées.
     """
-    global _theme
-    _theme = theme
+    global _theme, _full
+    _theme, _full = theme, full
     app.setFont(font("body"))
     app.setPalette(palette(theme))
     app.setStyleSheet(qss(theme, full))
+

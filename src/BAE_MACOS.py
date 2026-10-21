@@ -3,7 +3,9 @@ import struct
 import sys
 import zlib
 import socle_qt
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
+from i18n import L, N_
+from lang_button import LangButton, init_lang
+from PyQt6.QtCore import QSettings, Qt, QThread, pyqtSignal
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -49,7 +51,7 @@ class BethesdaArchive:
                 self.archive_type = "BA2"
                 self._parse_ba2(f)
             else:
-                raise ValueError("Archive non reconnue (ni .bsa, ni .ba2 valide).")
+                raise ValueError(L("Archive non reconnue (ni .bsa, ni .ba2 valide)."))
 
     def _parse_bsa(self, f):
         version = struct.unpack("<I", f.read(4))[0]
@@ -70,7 +72,7 @@ class BethesdaArchive:
         for _ in range(folder_count):
             buf = f.read(rec_size)
             if len(buf) < rec_size:
-                raise ValueError("Archive corrompue : table des dossiers tronquée.")
+                raise ValueError(L("Archive corrompue : table des dossiers tronquée."))
             if version >= 105:
                 f_hash, f_count, f_off_high, f_off_low = struct.unpack("<QIIQ", buf)
                 raw_folders.append({"hash": f_hash, "count": f_count})
@@ -198,7 +200,7 @@ class BethesdaArchive:
 
 class ExtractWorker(QThread):
     progress = pyqtSignal(int)
-    finished = pyqtSignal(str)
+    finished = pyqtSignal(int)  # nombre de fichiers extraits
     error = pyqtSignal(str)
 
     def __init__(self, archive, out_dir):
@@ -209,7 +211,7 @@ class ExtractWorker(QThread):
     def run(self):
         total = len(self.archive.files)
         if total == 0:
-            self.finished.emit("Archive vide.")
+            self.finished.emit(0)
             return
 
         try:
@@ -265,9 +267,9 @@ class ExtractWorker(QThread):
 
                     self.progress.emit(int(((idx + 1) / total) * 100))
 
-            self.finished.emit(f"Extraction terminée : {total} fichiers extraits.")
+            self.finished.emit(total)
         except Exception as e:
-            self.error.emit(f"Erreur : {str(e)}")
+            self.error.emit(str(e))
 
 
 # ==============================================================================
@@ -355,9 +357,10 @@ QProgressBar::chunk {
 
 class MainWindow(QMainWindow):
 
-    def __init__(self):
+    def __init__(self, settings: QSettings):
         super().__init__()
         self.setWindowTitle("Bethesda Archive Extractor")
+        self.status = (N_("En attente"), {})  # (clé française, paramètres), retraduit au changement de langue
         self.resize(880, 580)
         self.setStyleSheet(APP_STYLE)
 
@@ -372,23 +375,22 @@ class MainWindow(QMainWindow):
         top_bar = QHBoxLayout()
         top_bar.setSpacing(10)
 
-        self.btn_open = QPushButton("📦 Ouvrir une archive (.bsa / .ba2)")
+        self.btn_open = QPushButton()
         self.btn_open.setObjectName("primaryOpenBtn")
         self.btn_open.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_open.clicked.connect(self.choose_file)
         top_bar.addWidget(self.btn_open)
 
-        self.lbl_info = QLabel("Glisse-dépose une archive n'importe où ici.")
+        self.lbl_info = QLabel()
         self.lbl_info.setStyleSheet("color: #8f8f8f;")
         top_bar.addWidget(self.lbl_info)
         top_bar.addStretch()
+        self.btn_lang = LangButton(settings, self.apply_texts)
+        top_bar.addWidget(self.btn_lang)
 
         layout.addLayout(top_bar)
 
         self.table = QTableWidget(0, 3)
-        self.table.setHorizontalHeaderLabels(
-            ["Chemin du fichier", "Taille brute", "Type d'archive"]
-        )
         self.table.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.Stretch
         )
@@ -406,13 +408,13 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.progress_bar)
 
         bottom_bar = QHBoxLayout()
-        self.status_lbl = QLabel("En attente")
+        self.status_lbl = QLabel()
         self.status_lbl.setStyleSheet("color: #707070;")
         bottom_bar.addWidget(self.status_lbl)
 
         bottom_bar.addStretch()
 
-        self.btn_extract = QPushButton("EXTRAIRE TOUT")
+        self.btn_extract = QPushButton()
         self.btn_extract.setObjectName("actionCyanBtn")
         self.btn_extract.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_extract.setEnabled(False)
@@ -421,6 +423,29 @@ class MainWindow(QMainWindow):
 
         layout.addLayout(bottom_bar)
         self.setCentralWidget(container)
+        self.apply_texts()
+
+    def apply_texts(self):
+        """(Re)traduit l'interface dans la langue active."""
+        self.btn_open.setText("📦 " + L("Ouvrir une archive (.bsa / .ba2)"))
+        self.btn_extract.setText(L("EXTRAIRE TOUT"))
+        self.table.setHorizontalHeaderLabels([L("Chemin du fichier"), L("Taille brute"), L("Type d'archive")])
+        if self.current_archive:
+            self.lbl_info.setText(L("{name} — {type} ({n} fichiers)", name=os.path.basename(self.current_archive.filepath),
+                                    type=self.current_archive.archive_type, n=len(self.current_archive.files)))
+            for row in range(self.table.rowCount()):
+                item = self.table.item(row, 2)
+                item.setText(self._type_label(item.data(Qt.ItemDataRole.UserRole)))
+        else:
+            self.lbl_info.setText(L("Glisse-dépose une archive n'importe où ici."))
+        self.set_status(*self.status)
+
+    def set_status(self, key, kw=None):
+        self.status = (key, kw or {})
+        self.status_lbl.setText(L(key, **self.status[1]))
+
+    def _type_label(self, compressed):
+        return f"{self.current_archive.archive_type} " + (L("(Comp)") if compressed else L("(Brut)"))
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -441,9 +466,9 @@ class MainWindow(QMainWindow):
     def choose_file(self):
         file_path, _ = QFileDialog.getOpenFileName(
             self,
-            "Sélectionner une archive Bethesda",
+            L("Sélectionner une archive Bethesda"),
             "",
-            "Archives Bethesda (*.bsa *.ba2);;Tous les fichiers (*.*)",
+            L("Archives Bethesda") + " (*.bsa *.ba2);;" + L("Tous les fichiers") + " (*.*)",
         )
         if file_path:
             self.load_archive(file_path)
@@ -453,9 +478,8 @@ class MainWindow(QMainWindow):
             self.current_archive = BethesdaArchive(path)
             total = len(self.current_archive.files)
 
-            self.lbl_info.setText(
-                f"{os.path.basename(path)} — {self.current_archive.archive_type} ({total} fichiers)"
-            )
+            self.lbl_info.setText(L("{name} — {type} ({n} fichiers)", name=os.path.basename(path),
+                                    type=self.current_archive.archive_type, n=total))
 
             self.table.setRowCount(0)
             self.table.setSortingEnabled(False)
@@ -466,28 +490,23 @@ class MainWindow(QMainWindow):
                 self.table.setItem(
                     row, 1, QTableWidgetItem(f"{f['size'] / 1024:.1f} KB")
                 )
-                self.table.setItem(
-                    row,
-                    2,
-                    QTableWidgetItem(
-                        f"{self.current_archive.archive_type} "
-                        + ("(Comp)" if f["compressed"] else "(Brut)")
-                    ),
-                )
+                kind = QTableWidgetItem(self._type_label(f["compressed"]))
+                kind.setData(Qt.ItemDataRole.UserRole, f["compressed"])
+                self.table.setItem(row, 2, kind)
             self.table.setSortingEnabled(True)
 
-            self.status_lbl.setText("Prêt pour l'extraction.")
+            self.set_status(N_("Prêt pour l'extraction."))
             self.btn_extract.setEnabled(True)
             self.progress_bar.setValue(0)
         except Exception as e:
-            self.status_lbl.setText(f"Erreur : {e}")
+            self.set_status(N_("Erreur : {err}"), {"err": str(e)})
 
     def extract_all(self):
         if not self.current_archive:
             return
 
         dest = QFileDialog.getExistingDirectory(
-            self, "Choisir le dossier de destination"
+            self, L("Choisir le dossier de destination")
         )
         if not dest:
             return
@@ -501,13 +520,16 @@ class MainWindow(QMainWindow):
         self.worker.error.connect(self.on_error)
         self.worker.start()
 
-    def on_finished(self, msg):
-        self.status_lbl.setText(msg)
+    def on_finished(self, total):
+        if total:
+            self.set_status(N_("Extraction terminée : {n} fichiers extraits."), {"n": total})
+        else:
+            self.set_status(N_("Archive vide."))
         self.btn_extract.setEnabled(True)
         self.btn_open.setEnabled(True)
 
     def on_error(self, err):
-        self.status_lbl.setText(err)
+        self.set_status(N_("Erreur : {err}"), {"err": err})
         self.btn_extract.setEnabled(True)
         self.btn_open.setEnabled(True)
 
@@ -515,6 +537,8 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     socle_qt.apply(app, full=False)  # design system Socle
-    win = MainWindow()
+    settings = QSettings("BAE", "BAE")
+    init_lang(settings)
+    win = MainWindow(settings)
     win.show()
     sys.exit(app.exec())

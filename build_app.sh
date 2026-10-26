@@ -17,7 +17,11 @@ command -v python3 >/dev/null || { echo "Erreur : python3 requis." >&2; exit 1; 
 
 cleanup() {
     # "$APP_NAME" (sans .app) : dossier intermédiaire de PyInstaller, à ne pas laisser à la racine
-    rm -rf "$VENV" "$TMP_DIR" "$APP_NAME.spec" "$APP_NAME" build __pycache__ src/__pycache__
+    # Le Finder peut recréer des .DS_Store pendant la suppression : quelques essais, sans faire échouer le build
+    for _ in 1 2 3; do
+        rm -rf "$VENV" "$TMP_DIR" "$APP_NAME.spec" "$APP_NAME" build __pycache__ src/__pycache__ 2>/dev/null && break
+        sleep 1
+    done
     find "$ROOT" -name ".DS_Store" -not -path "*/node_modules/*" -delete 2>/dev/null || true
 }
 trap cleanup EXIT

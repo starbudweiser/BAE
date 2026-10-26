@@ -140,8 +140,10 @@ def start_qt(parent, repo: str, page: str = KIT_PAGE, lang=None) -> None:
     if not prep:
         return
     current, state, name, get_lang = prep
-    from PyQt6.QtCore import QObject, pyqtSignal
-    from PyQt6.QtWidgets import QMessageBox
+    # import dynamique : PyInstaller n'embarque pas PyQt6 dans les applis pywebview qui n'appellent pas start_qt
+    import importlib
+    QObject, pyqtSignal = (getattr(importlib.import_module("PyQt6.QtCore"), n) for n in ("QObject", "pyqtSignal"))
+    QMessageBox = importlib.import_module("PyQt6.QtWidgets").QMessageBox
 
     class _Relay(QObject):
         found = pyqtSignal(str)

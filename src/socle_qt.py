@@ -64,7 +64,6 @@ TOKENS = {'version': 1,
                      'danger-bg': '#4a1c1c',
                      'danger-border': '#ef4444',
                      'danger-soft': '#fecaca',
-                     'info-bg': '#0c3a52',
                      'info-border': '#38bdf8',
                      'info-soft': '#bae6fd',
                      'focus-ring': '#38bdf8',
@@ -113,7 +112,6 @@ TOKENS = {'version': 1,
                       'danger-bg': '#fee2e2',
                       'danger-border': '#dc2626',
                       'danger-soft': '#7f1d1d',
-                      'info-bg': '#e0f2fe',
                       'info-border': '#0284c7',
                       'info-soft': '#0c4a6e',
                       'focus-ring': '#0369a1',
@@ -128,6 +126,7 @@ TOKENS = {'version': 1,
              'space-6': 24,
              'space-8': 32,
              'radius': 4,
+             'radius-field': 0,
              'radius-md': 6,
              'radius-lg': 8,
              'radius-xl': 12,
@@ -420,10 +419,10 @@ QPushButton[variant="picker"] QLabel {{ background: transparent; }}
 /* Champs */
 QLineEdit, QPlainTextEdit, QTextEdit, QSpinBox, QComboBox {{
     background-color: {k['bg-sunken']}; color: {k['text-strong']};
-    border: 1px solid {k['border-control']}; border-radius: {r}px; padding: 0 {m('space-2.5')}px;
+    border: 1px solid transparent; border-radius: {m('radius-field')}px; padding: 0 {m('space-3')}px;
 }}
-QLineEdit, QSpinBox, QComboBox {{ min-height: {m('size-control') - 2}px; }}
-QPlainTextEdit, QTextEdit {{ padding: {m('space-2')}px; }}
+QLineEdit, QSpinBox, QComboBox {{ min-height: {m('size-control-lg') - 2}px; }}
+QPlainTextEdit, QTextEdit {{ padding: {m('space-3')}px; }}
 QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus, QSpinBox:focus, QComboBox:focus {{ border-color: {k['focus-ring']}; }}
 QLineEdit:disabled, QComboBox:disabled {{ color: {k['text-disabled']}; }}
 QComboBox {{ padding-right: {m('space-6') + m('space-1')}px; }}

@@ -22,7 +22,7 @@ html, body { height: 100%; }
 .drop__title { margin: 0; font: 700 16px/24px var(--font-sans); letter-spacing: .025em; color: var(--text-strong); }
 .drop__hint { margin: 0; color: var(--text-subtle); line-height: 1.5; }
 .app.is-dragging .drop, .app.is-dragging .table-wrap { border-color: var(--accent); }
-.app.is-dragging .drop { background: var(--accent-tint); }
+.app.is-dragging .drop { background: var(--surface-hover); }
 
 /* Tableau */
 .table-wrap { flex: 1; min-height: 0; overflow: auto; background: var(--bg-sunken); border: 1px solid var(--border); border-radius: var(--radius); }

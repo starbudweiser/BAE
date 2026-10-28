@@ -1,4 +1,4 @@
-/* BAE — maquette web, sur les tokens Socle */
+/* mBAE — maquette web, sur les tokens Socle */
 html, body { height: 100%; }
 .app { display: flex; flex-direction: column; height: 100%; min-height: 0; }
 
@@ -61,3 +61,6 @@ html, body { height: 100%; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* initiale du nom dans le bleu du logo */
+.brand-m { color: #21a3d9; }

@@ -539,9 +539,10 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     socle_qt.apply(app, full=False)  # design system Socle
-    settings = QSettings("BAE", "BAE")
+    socle_qt.brand(app, "mBAE", "#21a3d9")  # « m » dans le bleu du logo
+    settings = QSettings("mBAE", "mBAE")
     init_lang(settings)
     win = MainWindow(settings)
     win.show()
-    update_check.start_qt(win, "BAE", lang=get_lang)  # nouvelle version ? (au plus une fois par jour)
+    update_check.start_qt(win, "mBAE", lang=get_lang)  # nouvelle version ? (au plus une fois par jour)
     sys.exit(app.exec())

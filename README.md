@@ -1,4 +1,4 @@
-# BAE
+# mBAE
 
 **Bethesda Archive Extractor: open and extract .bsa and .ba2 archives on macOS.**  
 *Bethesda Archive Extractor : ouvrir et extraire les archives .bsa et .ba2 sur macOS.*
@@ -10,7 +10,7 @@
 
 ### What it does
 
-BAE lists the content of Bethesda archives (Skyrim .bsa, Fallout 4 / Starfield .ba2) and extracts them to a folder of your choice, handling zlib and LZ4 compression.
+mBAE lists the content of Bethesda archives (Skyrim .bsa, Fallout 4 / Starfield .ba2) and extracts them to a folder of your choice, handling zlib and LZ4 compression.
 
 ### Features
 
@@ -22,6 +22,7 @@ BAE lists the content of Bethesda archives (Skyrim .bsa, Fallout 4 / Starfield .
 
 ### What's new in 1.0.2
 
+- BAE is renamed mBAE, like the other Skyrim Mac Toolkit apps. Because of the new name, macOS treats it as a new app: remove the old BAE.app from Applications.
 
 ### Updates
 
@@ -39,7 +40,7 @@ A Mac with **Apple Silicon** (M1 or later), **macOS 13 Ventura** or later. No Py
 ### Installation
 
 1. Download the zip from Nexus Mods (or from the GitHub releases) and unzip it.
-2. Move **BAE.app** to your **Applications** folder.
+2. Move **mBAE.app** to your **Applications** folder.
 
 ### How to use
 
@@ -48,8 +49,8 @@ A Mac with **Apple Silicon** (M1 or later), **macOS 13 Ventura** or later. No Py
 
 ### FAQ
 
-**Can BAE create archives?**  
-No, BAE only reads and extracts.
+**Can mBAE create archives?**  
+No, mBAE only reads and extracts.
 
 ### Building from source
 
@@ -69,7 +70,7 @@ Released under the **MIT License**: free to use, modify and share. Part of the *
 
 ### À quoi ça sert
 
-BAE liste le contenu des archives Bethesda (.bsa de Skyrim, .ba2 de Fallout 4 / Starfield) et les extrait dans le dossier de votre choix, en gérant les compressions zlib et LZ4.
+mBAE liste le contenu des archives Bethesda (.bsa de Skyrim, .ba2 de Fallout 4 / Starfield) et les extrait dans le dossier de votre choix, en gérant les compressions zlib et LZ4.
 
 ### Fonctions
 
@@ -81,6 +82,7 @@ BAE liste le contenu des archives Bethesda (.bsa de Skyrim, .ba2 de Fallout 4 / 
 
 ### Nouveautés de la 1.0.2
 
+- BAE s'appelle désormais mBAE, comme les autres applis du Skyrim Mac Toolkit. Avec ce nouveau nom, macOS la considère comme une nouvelle appli : supprimez l'ancienne BAE.app du dossier Applications.
 
 ### Mises à jour
 
@@ -98,7 +100,7 @@ Un Mac **Apple Silicon** (M1 ou plus récent), **macOS 13 Ventura** ou plus réc
 ### Installation
 
 1. Téléchargez le zip sur Nexus Mods (ou dans les releases GitHub) et décompressez-le.
-2. Placez **BAE.app** dans votre dossier **Applications**.
+2. Placez **mBAE.app** dans votre dossier **Applications**.
 
 ### Utilisation
 
@@ -107,8 +109,8 @@ Un Mac **Apple Silicon** (M1 ou plus récent), **macOS 13 Ventura** ou plus réc
 
 ### Questions fréquentes
 
-**BAE peut-il créer des archives ?**  
-Non, BAE lit et extrait uniquement.
+**mBAE peut-il créer des archives ?**  
+Non, mBAE lit et extrait uniquement.
 
 ### Compiler depuis les sources
 

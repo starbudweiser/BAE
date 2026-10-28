@@ -1,12 +1,12 @@
 #!/bin/bash
-# Construit BAE.app à la racine du projet puis supprime les fichiers temporaires.
+# Construit mBAE.app à la racine du projet puis supprime les fichiers temporaires.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
-APP_NAME="BAE"
-ENTRY="src/BAE_MACOS.py"
+APP_NAME="mBAE"
+ENTRY="src/mBAE_MACOS.py"
 ICON="$ROOT/assets/icon.icns"
 VENV=".build_venv"
 TMP_DIR=".build_tmp"

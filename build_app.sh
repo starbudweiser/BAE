@@ -29,7 +29,11 @@ trap cleanup EXIT
 rm -rf "$APP_NAME.app" "$APP_NAME"
 python3 -m venv "$VENV"
 "$VENV/bin/pip" install --quiet --upgrade pip
-"$VENV/bin/pip" install --quiet pyinstaller PyQt6 lz4
+# Lanceur PyInstaller recompilé depuis les sources (et non celui, précompilé, de la roue PyPI) :
+# le lanceur générique est partagé par d'innombrables programmes, dont des malwares, et fait
+# mettre les applis en quarantaine par les antivirus heuristiques (scan Nexus Mods).
+PYINSTALLER_COMPILE_BOOTLOADER=1 "$VENV/bin/pip" install --quiet --no-binary pyinstaller pyinstaller
+"$VENV/bin/pip" install --quiet PyQt6 lz4
 
 "$VENV/bin/pyinstaller" \
     --noconfirm --clean --windowed \
@@ -45,7 +49,7 @@ mv "$TMP_DIR/dist/$APP_NAME.app" "$ROOT/$APP_NAME.app"
 # le dépôt GitHub seul), signature ad hoc pour que l'appli se lance quand même.
 SIGN_APP="$(cd "$ROOT/.." && pwd)/_tools/sign_app.sh"
 if [ -x "$SIGN_APP" ]; then
-    "$SIGN_APP" "$ROOT/$APP_NAME.app" 1.0.1
+    "$SIGN_APP" "$ROOT/$APP_NAME.app" 1.0.2
 else
     echo "_tools/sign_app.sh absent : signature ad hoc."
     codesign --force --deep --sign - "$ROOT/$APP_NAME.app"

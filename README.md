@@ -20,12 +20,12 @@ BAE lists the content of Bethesda archives (Skyrim .bsa, Fallout 4 / Starfield .
 - Drag and drop an archive anywhere on the window.
 - Interface in **English, French, Italian and Spanish** (follows your Mac's language; can be changed in the app).
 
-### What's new in 1.0.1
+### What's new in 1.0.2
 
 
 ### Updates
 
-From version 1.0.1 the app checks once a day whether a newer release exists on GitHub and offers to open the Nexus page, remind you later or skip that version. Nothing is downloaded or installed automatically. The full history is in [CHANGELOG.md](CHANGELOG.md).
+From version 1.0.2 the app checks once a day whether a newer release exists on GitHub and offers to open the Nexus page, remind you later or skip that version. Nothing is downloaded or installed automatically. The full history is in [CHANGELOG.md](CHANGELOG.md).
 
 ### Screenshots
 
@@ -79,12 +79,12 @@ BAE liste le contenu des archives Bethesda (.bsa de Skyrim, .ba2 de Fallout 4 / 
 - Glissez-déposez une archive n'importe où sur la fenêtre.
 - Interface en **français, anglais, italien et espagnol** (suit la langue du Mac ; modifiable dans l'appli).
 
-### Nouveautés de la 1.0.1
+### Nouveautés de la 1.0.2
 
 
 ### Mises à jour
 
-À partir de la version 1.0.1, l'appli vérifie une fois par jour si une version plus récente existe sur GitHub et propose d'ouvrir la page Nexus, de rappeler plus tard ou d'ignorer cette version. Rien n'est téléchargé ni installé automatiquement. L'historique complet est dans [CHANGELOG.md](CHANGELOG.md).
+À partir de la version 1.0.2, l'appli vérifie une fois par jour si une version plus récente existe sur GitHub et propose d'ouvrir la page Nexus, de rappeler plus tard ou d'ignorer cette version. Rien n'est téléchargé ni installé automatiquement. L'historique complet est dans [CHANGELOG.md](CHANGELOG.md).
 
 ### Captures d'écran
 

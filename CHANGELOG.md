@@ -2,6 +2,18 @@
 
 Notes de version / release notes (EN + FR). Translations in IT and ES: see the Nexus Mods page.
 
+## 1.0.2
+
+**English**
+
+- The app's launcher is now compiled from source when the app is built, instead of using PyInstaller's generic prebuilt launcher, which antivirus scanners tend to flag. No change in features.
+
+**Français**
+
+- Le lanceur de l'appli est maintenant compilé depuis les sources à la construction de l'appli, au lieu du lanceur générique précompilé de PyInstaller, souvent signalé par les antivirus. Aucun changement de fonctionnalités.
+
+<!-- gen_changelogs : entrées ci-dessous conservées -->
+
 ## 1.0.1
 
 **English**
@@ -12,7 +24,6 @@ Notes de version / release notes (EN + FR). Translations in IT and ES: see the N
 
 - Avertissement de nouvelle version : l'appli consulte la dernière release GitHub une fois par jour et propose d'ouvrir la page Nexus, de rappeler plus tard ou d'ignorer cette version. Rien n'est téléchargé ni installé.
 
-<!-- gen_changelogs : entrées ci-dessous conservées -->
 
 ## 1.0.0
 

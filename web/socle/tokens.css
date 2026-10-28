@@ -28,7 +28,6 @@
   --accent-fill-pressed: #0c4a6e;
   --on-accent-fill: #ffffff;
   --accent-text: #38bdf8;
-  --accent-tint: #0c3a52;
   --action: #fbbf24;
   --action-hover: #f59e0b;
   --action-pressed: #d97706;
@@ -47,6 +46,13 @@
   --danger-soft: #fecaca;
   --info-border: #38bdf8;
   --info-soft: #bae6fd;
+  --bubble-help: #0ea5e9;
+  --bubble-tip: #22c55e;
+  --bubble-warning: #fbbf24;
+  --bubble-danger: #ef4444;
+  --bubble-ai: #f59e0b;
+  --on-bubble: #1a1a1a;
+  --bubble-icon: #262626;
   --focus-ring: #38bdf8;
   --scrim: rgba(0, 0, 0, 0.75);
 }
@@ -79,7 +85,6 @@
   --accent-fill-pressed: #0c4a6e;
   --on-accent-fill: #ffffff;
   --accent-text: #0369a1;
-  --accent-tint: #e0f2fe;
   --action: #fbbf24;
   --action-hover: #f59e0b;
   --action-pressed: #d97706;
@@ -98,6 +103,13 @@
   --danger-soft: #7f1d1d;
   --info-border: #0284c7;
   --info-soft: #0c4a6e;
+  --bubble-help: #0ea5e9;
+  --bubble-tip: #22c55e;
+  --bubble-warning: #fbbf24;
+  --bubble-danger: #ef4444;
+  --bubble-ai: #f59e0b;
+  --on-bubble: #1a1a1a;
+  --bubble-icon: #262626;
   --focus-ring: #0369a1;
   --scrim: rgba(17, 17, 17, 0.45);
 }
@@ -131,7 +143,6 @@
     --accent-fill-pressed: #0c4a6e;
     --on-accent-fill: #ffffff;
     --accent-text: #0369a1;
-    --accent-tint: #e0f2fe;
     --action: #fbbf24;
     --action-hover: #f59e0b;
     --action-pressed: #d97706;
@@ -150,6 +161,13 @@
     --danger-soft: #7f1d1d;
     --info-border: #0284c7;
     --info-soft: #0c4a6e;
+  --bubble-help: #0ea5e9;
+  --bubble-tip: #22c55e;
+  --bubble-warning: #fbbf24;
+  --bubble-danger: #ef4444;
+  --bubble-ai: #f59e0b;
+  --on-bubble: #1a1a1a;
+  --bubble-icon: #262626;
     --focus-ring: #0369a1;
     --scrim: rgba(17, 17, 17, 0.45);
   }
@@ -177,6 +195,9 @@
   --size-choice: 16px;
   --size-scrollbar: 8px;
   --size-sidebar-min: 200px;
+  --size-splash-width: 500px;
+  --size-splash-height: 190px;
+  --size-splash-title: 40px;
   --opacity-disabled: 0.4;
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;

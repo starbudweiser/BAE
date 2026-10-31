@@ -24,15 +24,33 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-try:
-    import lz4.block
-except ImportError:
-    lz4 = None
+import lz4.block
+import lz4.frame
 
 
 # ==============================================================================
 # MOTEUR BSA / BA2
 # ==============================================================================
+
+
+def unpack(raw, real_size):
+    """Bloc BA2 : zlib (Fallout 4, Skyrim) ou LZ4 (Starfield)."""
+    try:
+        return zlib.decompress(raw)
+    except zlib.error:
+        return lz4.block.decompress(raw, uncompressed_size=real_size)
+
+
+def dds_header(width, height, mips, dxgi, cube):
+    """En-tête DDS avec extension DX10 (148 octets), valable pour tous les formats DXGI d'un BA2."""
+    flags = 0x1007 | (0x20000 if mips > 1 else 0)
+    caps = 0x1000 | (0x400008 if mips > 1 else 0) | (0x8 if cube else 0)
+    return (
+        struct.pack("<4s7I11I", b"DDS ", 124, flags, height, width, 0, 0, mips, *([0] * 11))
+        + struct.pack("<II4s5I", 32, 0x4, b"DX10", 0, 0, 0, 0, 0)
+        + struct.pack("<5I", caps, 0xFE00 if cube else 0, 0, 0, 0)
+        + struct.pack("<5I", dxgi, 3, 4 if cube else 0, 1, 0)
+    )
 
 
 class BethesdaArchive:
@@ -41,6 +59,8 @@ class BethesdaArchive:
         self.filepath = filepath
         self.files = []
         self.archive_type = None
+        self.version = 0
+        self.embedded_names = False
         self._parse()
 
     def _parse(self):
@@ -56,7 +76,7 @@ class BethesdaArchive:
                 raise ValueError(L("Archive non reconnue (ni .bsa, ni .ba2 valide)."))
 
     def _parse_bsa(self, f):
-        version = struct.unpack("<I", f.read(4))[0]
+        version = self.version = struct.unpack("<I", f.read(4))[0]
         data_offset = struct.unpack("<I", f.read(4))[0]
         archive_flags = struct.unpack("<I", f.read(4))[0]
         folder_count, file_count = struct.unpack("<II", f.read(8))
@@ -65,7 +85,8 @@ class BethesdaArchive:
 
         has_dir_names = bool(archive_flags & 0x1)
         has_file_names = bool(archive_flags & 0x2)
-        default_compressed = bool(archive_flags & 0x100)
+        default_compressed = bool(archive_flags & 0x4)
+        self.embedded_names = version >= 104 and bool(archive_flags & 0x100)
 
         # 1. Lecture des en-têtes de dossiers (Folder Records)
         # v105 (Skyrim SE 64-bit) utilise 24 octets par record, les versions <=104 utilisent 16 octets
@@ -105,7 +126,7 @@ class BethesdaArchive:
                 is_comp = default_compressed
                 if size & (1 << 30):
                     is_comp = not default_compressed
-                real_size = size & ~(1 << 30)
+                real_size = size & 0x3FFFFFFF
 
                 files_in_folder.append(
                     {
@@ -150,33 +171,37 @@ class BethesdaArchive:
                     )
 
     def _parse_ba2(self, f):
-        version = struct.unpack("<I", f.read(4))[0]
+        version = self.version = struct.unpack("<I", f.read(4))[0]
         header_type = f.read(4)
         num_files = struct.unpack("<I", f.read(4))[0]
         name_table_offset = struct.unpack("<Q", f.read(8))[0]
+        if version >= 2:  # Starfield : en-tête plus long
+            f.seek(12 if version == 3 else 8, 1)
 
         files_meta = []
         if header_type == b"GNRL":
             for _ in range(num_files):
-                meta = struct.unpack("<IIIIQQI", f.read(36))
+                meta = struct.unpack("<IIIIQIII", f.read(36))
                 files_meta.append(
                     {
                         "offset": meta[4],
-                        "packed_size": meta[2],
-                        "real_size": meta[3],
-                        "compressed": meta[2] > 0,
+                        "packed_size": meta[5],
+                        "real_size": meta[6],
+                        "compressed": meta[5] > 0,
                     }
                 )
         elif header_type == b"DX10":
             for _ in range(num_files):
-                meta = struct.unpack("<IIIIQQ", f.read(32))
-                f.read(36)
+                meta = struct.unpack("<IIIBBHHHBBBB", f.read(24))
+                chunks = [struct.unpack("<QIIHHI", f.read(24))[:3] for _ in range(meta[4])]
                 files_meta.append(
                     {
-                        "offset": meta[4],
-                        "packed_size": meta[2],
-                        "real_size": meta[3],
-                        "compressed": meta[2] > 0,
+                        "offset": chunks[0][0] if chunks else 0,
+                        "packed_size": sum(c[1] for c in chunks),
+                        "real_size": sum(c[2] for c in chunks) + 148,
+                        "compressed": any(c[1] for c in chunks),
+                        "chunks": chunks,
+                        "texture": (meta[7], meta[6], meta[8], meta[9], meta[10]),
                     }
                 )
 
@@ -226,42 +251,32 @@ class ExtractWorker(QThread):
                     f.seek(item["offset"])
 
                     if self.archive.archive_type == "BSA":
+                        remaining = item["size"]
+                        if self.archive.embedded_names:  # nom du fichier répété devant ses données
+                            name_len = f.read(1)[0]
+                            f.seek(name_len, 1)
+                            remaining -= name_len + 1
                         if item["compressed"]:
                             buf_len = f.read(4)
                             if len(buf_len) < 4:
                                 continue
-                            uncomp_size = struct.unpack("<I", buf_len)[0]
-                            raw = f.read(item["size"] - 4)
-                            try:
-                                data = zlib.decompress(raw)
-                            except Exception:
-                                data = zlib.decompress(raw, -15)
+                            raw = f.read(remaining - 4)
+                            data = lz4.frame.decompress(raw) if self.archive.version >= 105 else zlib.decompress(raw)
                         else:
-                            data = f.read(item["size"])
+                            data = f.read(remaining)
+
+                    elif "chunks" in item:
+                        parts = [dds_header(*item["texture"])]
+                        for offset, packed, full in item["chunks"]:
+                            f.seek(offset)
+                            parts.append(unpack(f.read(packed), full) if packed else f.read(full))
+                        data = b"".join(parts)
 
                     elif self.archive.archive_type == "BA2":
-                        read_len = (
-                            item["packed_size"]
-                            if item["compressed"]
-                            else item["size"]
-                        )
-                        raw = f.read(read_len)
                         if item["compressed"]:
-                            try:
-                                data = zlib.decompress(raw)
-                            except Exception:
-                                if lz4:
-                                    try:
-                                        data = lz4.block.decompress(
-                                            raw,
-                                            uncompressed_size=item["real_size"],
-                                        )
-                                    except Exception:
-                                        data = zlib.decompress(raw, -15)
-                                else:
-                                    data = zlib.decompress(raw, -15)
+                            data = unpack(f.read(item["packed_size"]), item["real_size"])
                         else:
-                            data = raw
+                            data = f.read(item["real_size"])
 
                     if not os.path.isdir(dest):
                         with open(dest, "wb") as out:

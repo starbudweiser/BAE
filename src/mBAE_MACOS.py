@@ -361,7 +361,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self, settings: QSettings):
         super().__init__()
-        self.setWindowTitle("Bethesda Archive Extractor")
+        self.setWindowTitle("Bethesda Archive Extractor for MacOS")
         self.status = (N_("En attente"), {})  # (clé française, paramètres), retraduit au changement de langue
         self.resize(880, 580)
         self.setStyleSheet(APP_STYLE)

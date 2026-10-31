@@ -2,17 +2,23 @@
 
 Notes de version / release notes (EN + FR). Translations in IT and ES: see the Nexus Mods page.
 
-## 1.0.2
+## 1.3.0
 
 **English**
 
 - BAE is renamed mBAE, like the other Skyrim Mac Toolkit apps. Because of the new name, macOS treats it as a new app: remove the old BAE.app from Applications.
+- Signed with a Developer ID and notarized by Apple: macOS now opens the app without a security warning.
 - The app's launcher is now compiled from source when the app is built, instead of using PyInstaller's generic prebuilt launcher, which antivirus scanners tend to flag. No change in features.
+- The first letter of the app's name now uses the colour of its logo everywhere it appears.
+- Version number aligned across the Skyrim Mac Toolkit.
 
 **Français**
 
 - BAE s'appelle désormais mBAE, comme les autres applis du Skyrim Mac Toolkit. Avec ce nouveau nom, macOS la considère comme une nouvelle appli : supprimez l'ancienne BAE.app du dossier Applications.
+- Signée avec un certificat Developer ID et notarisée par Apple : macOS ouvre désormais l'appli sans avertissement de sécurité.
 - Le lanceur de l'appli est maintenant compilé depuis les sources à la construction de l'appli, au lieu du lanceur générique précompilé de PyInstaller, souvent signalé par les antivirus. Aucun changement de fonctionnalités.
+- La première lettre du nom de l'appli prend la couleur de son logo partout où il est écrit.
+- Numéro de version commun à tout le Skyrim Mac Toolkit.
 
 <!-- gen_changelogs : entrées ci-dessous conservées -->
 

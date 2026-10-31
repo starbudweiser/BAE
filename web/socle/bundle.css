@@ -18,6 +18,10 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--
 .sc-btn--action:hover { background: var(--action-hover); }
 .sc-btn--action:active { background: var(--action-pressed); }
 .sc-btn:disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }
+/* contenu centré en largeur et en hauteur : icône carrée de 16px sans marge, espacement final des capitales rendu à gauche */
+.sc-btn { text-align: center; padding-block: 0; }
+.sc-btn > svg, .sc-btn > .sc-btn__icon { flex: none; display: block; width: 16px; height: 16px; margin: 0; }
+.sc-btn--primary, .sc-btn--flow-back { padding-inline: calc(var(--space-4) + .0125em) calc(var(--space-4) - .0125em); }
 
 /* Choice */
 .sc-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-3); }
